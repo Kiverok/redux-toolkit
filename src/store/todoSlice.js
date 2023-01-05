@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit/dist/createSlice";
+import { createSlice } from "@reduxjs/toolkit";
 
 const todoSlice = createSlice({
     name: 'todos',
@@ -9,12 +9,17 @@ const todoSlice = createSlice({
         addTodo(state, action) {
             state.todos.push({
                     id: new Date().toISOString(),
-                    text: action.payload.text
+                    text: action.payload.text,
                     completed: false,
             })
         },
-        removeTodo(state, action) {},
-        toddleTodoComplete(state, action) {}
+        removeTodo(state, action) {
+            state.todos = state.todos.filter(todo => todo.id !== action.payload.id)
+        },
+        toddleTodoComplete(state, action) {
+            const toggledTodo = state.todos.find(todo => todo.id === action.payload.id);
+    toggledTodo.completed = !toggledTodo.completed;
+        }
     },
 });
 

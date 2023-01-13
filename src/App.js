@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux/es/exports';
-import {addTodo} from './store/todoSlice';
+import { addTodo, fetchTodos } from './store/todoSlice';
 import './App.css';
 import TodoList from './components/TodoList';
 import InputField from './components/InputField';
@@ -14,6 +14,9 @@ function App() {
     setText('');
   };
 
+  useEffect(() => {
+    dispatch(fetchTodos());
+  }, [dispatch]);
 
 // const toggleTodoComplete = (todoId) => {
 // //   setTodos(

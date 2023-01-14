@@ -61,6 +61,34 @@ body: JSON.stringify({
     }
 );
 
+export const addNewTodo = createAsyncThunk(
+    'todos/addNewTodo',
+    async function (text, {rejectWithValue, dispatch}) {
+        try {
+            const todo = {
+                title: text,
+                userId: 1,
+                completed: false,
+            };
+            const response = await fetch ('https:/jsonplaceholder.typicode.com/todos', {
+                method: 'POST',
+                headers: {  
+                    'Content-Type': 'aplication/json'
+                },
+                body: JSON.stringify( todo)
+            });
+            if (!response.ok) {
+                throw new Error('Can\'t add task. Server error.');
+            }
+
+            const data = await response.json();
+            dispatch(addTodo(data)); 
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
 const setError = (state, action) => {
     state.status = 'rejected';
     state.error = action.payload;
@@ -75,11 +103,7 @@ const todoSlice = createSlice({
     },
     reducers: {
         addTodo(state, action) {
-            state.todos.push({
-                    id: new Date().toISOString(),
-                    text: action.payload.text,
-                    completed: false,
-            })
+            state.todos.push(action.payload);
         },
         removeTodo(state, action) {
             state.todos = state.todos.filter(todo => todo.id !== action.payload.id)
@@ -104,6 +128,6 @@ const todoSlice = createSlice({
     },
 });
 
-export const {addTodo, removeTodo, toddleTodoComplete} = todoSlice.actions;
+const {addTodo, removeTodo, toddleTodoComplete} = todoSlice.actions;
 
 export default todoSlice.reducer;
